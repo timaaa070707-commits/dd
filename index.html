@@ -9,19 +9,22 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 html,body{height:100%;margin:0;background:radial-gradient(ellipse at 70% 0,#0b2150,var(--bg) 70%);color:var(--tx);font-family:Inter,system-ui,sans-serif;overflow:hidden}
 #bg{position:fixed;inset:0;z-index:0}
 #app{position:relative;height:100%;z-index:1}
-.s{position:absolute;inset:0;padding:28px 6vw 76px;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:scale(1.05);transition:opacity .9s,transform .9s;pointer-events:none;overflow-y:auto}
-.s.on{opacity:1;transform:none;pointer-events:auto}
+.s{position:absolute;inset:0;padding:28px 6vw 76px;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:scale(1.25);filter:blur(10px);transition:opacity .55s,transform .55s,filter .55s;pointer-events:none;overflow-y:auto;overflow-x:hidden}
+.s[data-v="1"]{transform:translateX(14%) scale(.96)}
+.s[data-v="2"]{transform:rotate(-3deg) scale(1.2)}
+.s[data-v="3"]{transform:translateY(12%) scale(.9)}
+.s.on{opacity:1;transform:none;filter:none;pointer-events:auto}
 h1{font-size:clamp(30px,6vw,60px);line-height:1.12;margin:.2em 0;font-weight:800}
 h2{font-size:clamp(26px,4.4vw,44px);margin:0 0 .5em;font-weight:800}
 h2::after{content:"";display:block;width:90px;height:4px;margin-top:10px;border-radius:2px;background:linear-gradient(90deg,var(--a) 70%,var(--g) 70%)}
-.s.on h1,.s.on h2{animation:up .8s both .15s}
+.s.on h1,.s.on h2{animation:titleIn .7s both .1s}
 em{font-style:normal;color:var(--g);font-weight:600}
 .lead{font-size:clamp(17px,2.6vw,26px);color:var(--mu);max-width:760px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
 .card{padding:18px 20px;border-radius:16px;background:#0a1c4acc;border:1px solid #ffffff22;border-top:3px solid var(--a);opacity:0}
 .card h3{margin:0 0 6px;font-size:clamp(17px,2.2vw,22px);color:var(--a)}
 .card p{margin:0;font-size:clamp(14px,1.9vw,18px);line-height:1.45}
-.s.on .card{animation:up .7s both calc(.4s + var(--i)*.2s)}
+.s.on .card{animation:pop .55s backwards calc(.25s + var(--i)*.12s);opacity:1}
 .map{grid-column:span 2;display:flex;align-items:center;justify-content:center;border-top-color:var(--g)}
 .map svg{width:100%;max-height:230px}
 .map path{fill:#0b3a7a55;stroke:var(--a);stroke-width:1.5;stroke-dasharray:900;stroke-dashoffset:900}
@@ -52,14 +55,91 @@ em{font-style:normal;color:var(--g);font-weight:600}
 @keyframes draw{to{stroke-dashoffset:0}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes ping{50%{opacity:.3}}
-@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+#fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.rk{position:absolute;left:-130px;width:90px;filter:drop-shadow(0 0 8px #00afca)}
+.rk svg{display:block;width:100%}
+.fl{transform-origin:20px 15px;animation:fk .12s infinite alternate}
+.rk.a{top:18%;animation:fly 9s linear infinite 1s}
+.rk.b{top:64%;width:60px;opacity:.7;animation:fly 6s linear infinite 4s}
+.rk.c{top:40%;left:auto;right:-130px;width:44px;opacity:.5;animation:flyr 12s linear infinite 2s}
+.rk.l{top:auto;bottom:-60px;left:var(--x);width:80px;animation:launch .9s ease-in forwards}
+.ss{position:absolute;width:120px;height:2px;background:linear-gradient(90deg,#fff,transparent);opacity:0;animation:ssh 5s linear infinite}
+.pl{position:absolute;border-radius:50%;opacity:.5;animation:bob 8s ease-in-out infinite alternate}
+.p1{right:6%;top:10%;width:90px;height:90px;background:radial-gradient(circle at 30% 30%,#5ad0e6,#0b3a7a 60%,#030a1f);box-shadow:0 0 30px #00afca66}
+.p1::after{content:"";position:absolute;left:-30%;top:40%;width:160%;height:20%;border:2px solid #fec50caa;border-radius:50%;transform:rotate(-20deg)}
+.p2{left:4%;bottom:14%;width:56px;height:56px;background:radial-gradient(circle at 30% 30%,#ffe27a,#b07a00 70%);box-shadow:0 0 24px #fec50c66;animation-duration:6s}
+#warp{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:0;background:repeating-conic-gradient(at 50% 50%,#ffffff66 0 1deg,transparent 1deg 7deg);-webkit-mask-image:radial-gradient(circle,transparent 8%,#000 75%);mask-image:radial-gradient(circle,transparent 8%,#000 75%)}
+#warp.go{animation:wp .55s ease-out}
+.card{position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.card:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 0 28px #00afca88}
+.card::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,#ffffff22,transparent);transform:skewX(-20deg)}
+.s.on .card::after{animation:sh 4s infinite calc(1s + var(--i)*.4s)}
+.s.on h1{background:linear-gradient(90deg,#fff 30%,#fec50c 50%,#fff 70%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:titleIn .7s both .1s,shim 4s linear infinite 1s}
+em{animation:glow 2s ease-in-out infinite alternate}
+.ev::before{content:"";position:absolute;top:-21px;left:0;width:12px;height:12px;border-radius:50%;background:var(--g);box-shadow:0 0 12px var(--g)}
+.ev{position:relative}
+.tl::after{content:"";position:absolute;top:-4px;left:0;width:11px;height:11px;border-radius:50%;background:#fff;box-shadow:0 0 14px 4px var(--g);opacity:0}
+.s.on .tl::after{animation:run 1.8s ease-out forwards .3s}
+.vis{animation:bob 5s ease-in-out infinite alternate}
+.fxw{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.nova,.trail,.rk2,.beam,.ering{position:absolute;pointer-events:none;opacity:0}
+.rk2 svg{display:block;width:100%}
+.nova{left:50%;top:50%;width:24px;height:24px;border-radius:50%;background:radial-gradient(#fff,#fec50c 50%,transparent 70%)}
+.nova.n2{background:none;border:3px solid #fff}
+.s.on .nova{animation:nova 1.3s ease-out forwards}
+.s.on .nova.n2{animation:shock 1.4s ease-out .15s forwards}
+@keyframes nova{0%{opacity:1;transform:translate(-50%,-50%) scale(0)}25%{opacity:1;transform:translate(-50%,-50%) scale(10);box-shadow:0 0 120px 60px #fec50c}100%{opacity:0;transform:translate(-50%,-50%) scale(30)}}
+@keyframes shock{0%{opacity:.9;transform:translate(-50%,-50%) scale(0)}100%{opacity:0;transform:translate(-50%,-50%) scale(60)}}
+.s.on[data-fx="nova"] .card{animation:burst .9s cubic-bezier(.15,.9,.3,1) backwards .45s}
+@keyframes burst{from{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0) rotate(240deg)}}
+.trail{left:6vw;width:88vw;top:var(--gm);height:4px;margin-top:-2px;background:linear-gradient(90deg,transparent,#00afca,#fec50c);box-shadow:0 0 14px #00afca;transform-origin:left}
+.s.on .trail{animation:tr 1.8s linear .2s forwards}
+.rk2{left:calc(6vw - 80px);top:var(--gm);width:80px;margin-top:-13px;filter:drop-shadow(0 0 8px #00afca)}
+.s.on .rk2{animation:rtr 1.8s linear .2s forwards}
+@keyframes tr{0%{opacity:1;transform:scaleX(0)}83%{opacity:1;transform:scaleX(1)}100%{opacity:0;transform:scaleX(1)}}
+@keyframes rtr{0%{opacity:1;transform:translateX(0)}83%{opacity:1;transform:translateX(88vw)}100%{opacity:0;transform:translateX(calc(88vw + 300px))}}
+.s.on[data-fx="trail"] .grid{animation:wipe 1.5s linear .2s backwards}
+.s.on[data-fx="trail"] .card{animation:none;opacity:1}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+.ch{display:inline-block}
+.s.on .ch{animation:asm .9s cubic-bezier(.2,.9,.3,1) backwards calc(.2s + var(--d)*1s)}
+@keyframes asm{from{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(2.2);filter:blur(6px)}}
+.s.on[data-fx="frag"] h2{animation:none}
+[data-fx="frag"] .card{overflow:visible}
+[data-fx="frag"] .card::after{display:none}
+.beam{left:0;width:100%;height:3px;top:var(--gt);background:linear-gradient(90deg,transparent,#00afca,#fff,#00afca,transparent);box-shadow:0 0 18px 4px #00afca}
+.s.on .beam{animation:scan 1.5s linear .2s forwards}
+@keyframes scan{0%{opacity:1;top:var(--gt)}95%{opacity:1;top:var(--gb)}100%{opacity:0;top:var(--gb)}}
+.s.on[data-fx="scan"] .grid{animation:wipev 1.5s linear .2s backwards}
+.s.on[data-fx="scan"] .card{animation:none;opacity:1}
+@keyframes wipev{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
+.ering{left:50%;top:50%;width:40px;height:40px;margin:-20px;border:2px solid #fec50c;border-radius:50%}
+.s.on .ering{animation:ering 1.6s ease-out forwards}
+.s.on .ering.e2{animation-delay:.3s;border-color:#00afca}
+@keyframes ering{0%{opacity:.9;transform:scale(.2)}100%{opacity:0;transform:scale(16)}}
+.s.on[data-fx="orbit"] .card{animation:orb 1.2s cubic-bezier(.2,.8,.2,1) backwards calc(.2s + var(--i)*.15s)}
+@keyframes orb{from{opacity:0;transform:rotate(calc(540deg + var(--i)*60deg)) translateX(420px) rotate(calc(-540deg - var(--i)*60deg)) scale(.2)}}
+@keyframes titleIn{from{opacity:0;letter-spacing:.25em;filter:blur(12px)}to{opacity:1;letter-spacing:0;filter:none}}
+@keyframes pop{from{opacity:0;transform:translateY(30px) scale(.8) rotate(-3deg)}}
+@keyframes fly{from{transform:translateX(0)}50%{transform:translate(55vw,-30px)}to{transform:translateX(calc(100vw + 260px))}}
+@keyframes flyr{from{transform:scaleX(-1)}to{transform:translateX(calc(-100vw - 260px)) scaleX(-1)}}
+@keyframes launch{to{transform:rotate(-90deg) translateX(calc(100vh + 200px))}}
+@keyframes fk{to{transform:scaleX(1.7)}}
+@keyframes ssh{0%{opacity:0;transform:translate(0,0) rotate(-30deg)}5%{opacity:1}20%{opacity:0;transform:translate(-500px,290px) rotate(-30deg)}100%{opacity:0}}
+@keyframes wp{0%{opacity:0;transform:scale(.4)}30%{opacity:.8}100%{opacity:0;transform:scale(2.4)}}
+@keyframes sh{0%{left:-60%}30%,100%{left:130%}}
+@keyframes shim{from{background-position:100% 0}to{background-position:0 0}}
+@keyframes glow{from{text-shadow:0 0 0 #fec50c00}to{text-shadow:0 0 12px #fec50c}}
+@keyframes run{0%{opacity:1;left:0}100%{opacity:0;left:100%}}
+@keyframes bob{to{transform:translateY(-14px) rotate(3deg)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}#fx,#warp{display:none}}
 </style></head><body>
 <canvas id="bg"></canvas><div id="app"></div>
 <div id="nav"><button id="pv" aria-label="Алдыңғы">‹</button><div id="pb"><i></i></div><span id="ct"></span><button id="nx" aria-label="Келесі">›</button></div>
 <script>
 const rays=Array.from({length:32},(_,i)=>`<polygon points="150,62 145,92 155,92" fill="#fec50c" transform="rotate(${i*11.25} 150 150)"/>`).join('');
 const vis=`<svg class="vis" viewBox="0 0 300 300"><circle cx="150" cy="150" r="140" fill="#00afca"/><g class="sun">${rays}</g><circle cx="150" cy="150" r="42" fill="#fec50c"/><g class="orb"><ellipse cx="150" cy="150" rx="140" ry="50" fill="none" stroke="#fff" stroke-opacity=".5" stroke-dasharray="4 6" transform="rotate(-25 150 150)"/><g transform="rotate(-25 150 150)"><rect x="276" y="143" width="14" height="14" rx="3" fill="#fff"/><rect x="268" y="148" width="30" height="4" fill="#9fb2d6"/></g></g></svg>`;
-const map=`<svg viewBox="0 0 300 160"><path d="M10,70 L40,50 L70,55 L95,35 L140,40 L175,25 L215,35 L255,30 L290,55 L280,85 L245,95 L225,120 L190,115 L160,135 L120,125 L85,115 L60,125 L35,105 L15,95 Z"/><circle class="dot" cx="125" cy="92" r="6"/><circle cx="125" cy="92" r="2.5" fill="#fff"/><text x="135" y="88" fill="#fff" font-size="11" font-family="Inter,sans-serif">Байқоңыр</text></svg>`;
+const map=`<svg viewBox="0 0 300 160"><path d="M10,70 L40,50 L70,55 L95,35 L140,40 L175,25 L215,35 L255,30 L290,55 L280,85 L245,95 L225,120 L190,115 L160,135 L120,125 L85,115 L60,125 L35,105 L15,95 Z"/><circle class="dot" cx="125" cy="92" r="6"/><circle cx="125" cy="92" r="2.5" fill="#fff"/><circle cx="125" cy="92" r="6" fill="none" stroke="#fec50c"><animate attributeName="r" values="6;24" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="2s" repeatCount="indefinite"/></circle><path id="tj" d="M125,92 Q150,8 235,8" fill="none" stroke="#fec50c" stroke-dasharray="4 4" opacity=".7"/><circle r="4" fill="#fff"><animateMotion dur="2.5s" repeatCount="indefinite"><mpath href="#tj"/></animateMotion></circle><text x="135" y="88" fill="#fff" font-size="11" font-family="Inter,sans-serif">Байқоңыр</text></svg>`;
 const S=[
 {k:'hero',tag:'ҚАЗАҚСТАН · ҒАРЫШ',t:'Қазақстанның ғарышты игерудегі жетістіктері',sub:'Байқоңырдан болашаққа',who:'Орындаған: [Студенттің аты-жөні] · [Топ]'},
 {t:'Байқоңыр ғарыш айлағы',m:1,c:[['Маңызы','Әлемдегі <em>алғашқы әрі ең ірі</em> ғарыш айлақтарының бірі'],['Орналасуы','Қазақстанның <em>Қызылорда облысында</em>'],['Тарихы','1955 жылы құрылды; <em>1961 жылы Гагарин</em> осы жерден ұшты'],['Қазіргі мәртебесі','Ресейге <em>2050 жылға дейін</em> жалға берілген']]},
@@ -72,6 +152,13 @@ const S=[
 {t:'Болашақ',c:[['Жаңа спутниктер','Жетілдірілген <em>спутниктік технологиялар</em>'],['Ғарыштық зерттеулер','Ғылыми бағдарламаларды <em>кеңейту</em>'],['STEM және жастар','Жастардың <em>ғылым мен инженерияға</em> қызығушылығы'],['Ынтымақтастық','<em>Халықаралық</em> серіктестік']]},
 {k:'hero',tag:'ТАРИХТАН БОЛАШАҚҚА',t:'Қазақстан және ғарыш: тарихтан болашаққа',sub:'Назарларыңызға рақмет!',who:''}
 ];
+let wp=0;
+const RK='<svg viewBox="0 0 90 30"><path class="fl" d="M20,15 L2,9 L9,15 L2,21Z" fill="#fec50c"/><path d="M26,8 L18,0 L40,8Z M26,22 L18,30 L40,22Z" fill="#fec50c"/><path d="M20,8 H60 Q82,10 88,15 Q82,20 60,22 H20Z" fill="#eef4ff"/><circle cx="56" cy="15" r="4" fill="#00afca"/></svg>';
+const fx=document.createElement('div');fx.id='fx';
+fx.innerHTML=['a','b','c'].map(k=>`<div class="rk ${k}">${RK}</div>`).join('')+[[8,70,3],[25,40,7],[5,90,1],[40,60,5]].map(a=>`<div class="ss" style="top:${a[0]}%;left:${a[1]}%;animation-delay:${a[2]}s"></div>`).join('')+'<div class="pl p1"></div><div class="pl p2"></div>';
+document.body.prepend(fx);
+const wpl=document.createElement('div');wpl.id='warp';document.body.append(wpl);
+function boom(){wp=1;wpl.classList.remove('go');void wpl.offsetWidth;wpl.classList.add('go');const r=document.createElement('div');r.className='rk l';r.style.setProperty('--x',(10+Math.random()*75)+'vw');r.innerHTML=RK;fx.appendChild(r);setTimeout(()=>r.remove(),1000)}
 const app=document.getElementById('app');
 S.forEach(d=>{const e=document.createElement('section');e.className='s';let h='';
 if(d.k=='hero')h=`<div class="hero"><div><p class="tag">${d.tag}</p><h1>${d.t}</h1><p class="lead">${d.sub}</p><p class="who">${d.who}</p></div>${vis}</div>`;
@@ -79,14 +166,23 @@ else{h=`<h2>${d.t}</h2>`;
 if(d.tl)h+=`<div class="tl">${d.tl.map((x,i)=>`<div class="ev" style="--i:${i}"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('')}</div>`;
 if(d.c)h+=`<div class="grid">${d.m?`<div class="card map">${map}</div>`:''}${d.c.map((x,i)=>`<div class="card" style="--i:${i+1}"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('')}</div>`}
 e.innerHTML=h;app.appendChild(e)});
-const E=[...app.children];let c=0;
-function go(n){c=Math.max(0,Math.min(E.length-1,n));E.forEach((e,i)=>e.classList.toggle('on',i==c));document.getElementById('ct').textContent=(c+1)+' / '+E.length;document.querySelector('#pb i').style.width=((c+1)/E.length*100)+'%'}
+const E=[...app.children];let c=0,first=1;E.forEach((e,i)=>e.dataset.v=i%4);
+const FX={4:'nova',5:'trail',6:'frag',7:'scan',8:'orbit'},FW=h=>'<div class="fxw">'+h+'</div>';
+function split(el){const w=n=>{[...n.childNodes].forEach(k=>{if(k.nodeType==3){const f=document.createDocumentFragment();k.textContent.split(/(\s+)/).forEach(t=>{if(!t.trim()){f.append(t);return}const wd=document.createElement('span');wd.style.cssText='display:inline-block;white-space:nowrap';[...t].forEach(ch=>{const q=document.createElement('span');q.className='ch';q.textContent=ch;q.style.cssText=`--x:${(Math.random()-.5)*600}px;--y:${(Math.random()-.5)*500}px;--r:${(Math.random()-.5)*720}deg;--d:${Math.random()*.7}`;wd.append(q)});f.append(wd)});k.replaceWith(f)}else w(k)})};w(el)}
+E.forEach((e,i)=>{const f=FX[i];if(!f)return;e.dataset.fx=f;
+if(f=='nova')e.insertAdjacentHTML('afterbegin',FW('<div class="nova"></div><div class="nova n2"></div>'));
+if(f=='trail')e.insertAdjacentHTML('afterbegin',FW('<div class="trail"></div><div class="rk2">'+RK+'</div>'));
+if(f=='scan')e.insertAdjacentHTML('afterbegin',FW('<div class="beam"></div>'));
+if(f=='orbit')e.insertAdjacentHTML('afterbegin',FW('<div class="ering"></div><div class="ering e2"></div>'));
+if(f=='frag')e.querySelectorAll('h2,h3,p').forEach(split)});
+function setV(s){const g=s.querySelector('.grid');if(!g)return;const t=g.offsetTop,h=g.offsetHeight;s.style.setProperty('--gt',t+'px');s.style.setProperty('--gb',(t+h)+'px');s.style.setProperty('--gm',(t+h/2)+'px');const cx=s.clientWidth/2,cy=s.clientHeight/2;g.querySelectorAll('.card').forEach(k=>{k.style.setProperty('--dx',(cx-k.offsetLeft-k.offsetWidth/2)+'px');k.style.setProperty('--dy',(cy-k.offsetTop-k.offsetHeight/2)+'px')})}
+function go(n){const o=c;c=Math.max(0,Math.min(E.length-1,n));if(!first&&c!=o)boom();first=0;setV(E[c]);E.forEach((e,i)=>e.classList.toggle('on',i==c));document.getElementById('ct').textContent=(c+1)+' / '+E.length;document.querySelector('#pb i').style.width=((c+1)/E.length*100)+'%'}
 pv.onclick=()=>go(c-1);nx.onclick=()=>go(c+1);
 addEventListener('keydown',k=>{if(['ArrowRight','ArrowDown',' ','PageDown'].includes(k.key))go(c+1);if(['ArrowLeft','ArrowUp','PageUp'].includes(k.key))go(c-1)});
 let tx=0;addEventListener('touchstart',e=>tx=e.touches[0].clientX);addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>60)go(c+(d<0?1:-1))});
 go(0);
 const cv=document.getElementById('bg'),x=cv.getContext('2d');let W,H,P=[];
-function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;P=Array.from({length:120},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,s:Math.random()*.15+.03,p:Math.random()*6}))}
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;P=Array.from({length:220},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,s:Math.random()*.15+.03,p:Math.random()*6}))}
 rs();addEventListener('resize',rs);
-(function f(t){x.clearRect(0,0,W,H);P.forEach(p=>{p.x-=p.s;if(p.x<0)p.x=W;x.globalAlpha=.5+.5*Math.sin(t/1500+p.p);x.fillStyle='#fff';x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()});requestAnimationFrame(f)})(0);
+(function f(t){x.clearRect(0,0,W,H);wp*=.95;P.forEach(p=>{p.x-=p.s*(1+wp*70);if(p.x<0)p.x=W;x.globalAlpha=.5+.5*Math.sin(t/1500+p.p);x.fillStyle=wp>.05?'#bfe9ff':'#fff';if(wp>.05)x.fillRect(p.x,p.y,p.r+wp*p.s*900,p.r);else{x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()}});requestAnimationFrame(f)})(0);
 </script></body></html>
