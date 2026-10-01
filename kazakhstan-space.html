@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="kk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Қазақстанның ғарышты игерудегі жетістіктері</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#030a1f;--tx:#f2f6ff;--mu:#9fb2d6;--a:#00afca;--g:#fec50c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;margin:0;background:radial-gradient(ellipse at 70% 0,#0b2150,var(--bg) 70%);color:var(--tx);font-family:Inter,system-ui,sans-serif;overflow:hidden}
+#bg{position:fixed;inset:0;z-index:0}
+#app{position:relative;height:100%;z-index:1}
+.s{position:absolute;inset:0;padding:28px 6vw 76px;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:scale(1.05);transition:opacity .9s,transform .9s;pointer-events:none;overflow-y:auto}
+.s.on{opacity:1;transform:none;pointer-events:auto}
+h1{font-size:clamp(30px,6vw,60px);line-height:1.12;margin:.2em 0;font-weight:800}
+h2{font-size:clamp(26px,4.4vw,44px);margin:0 0 .5em;font-weight:800}
+h2::after{content:"";display:block;width:90px;height:4px;margin-top:10px;border-radius:2px;background:linear-gradient(90deg,var(--a) 70%,var(--g) 70%)}
+.s.on h1,.s.on h2{animation:up .8s both .15s}
+em{font-style:normal;color:var(--g);font-weight:600}
+.lead{font-size:clamp(17px,2.6vw,26px);color:var(--mu);max-width:760px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.card{padding:18px 20px;border-radius:16px;background:#0a1c4acc;border:1px solid #ffffff22;border-top:3px solid var(--a);opacity:0}
+.card h3{margin:0 0 6px;font-size:clamp(17px,2.2vw,22px);color:var(--a)}
+.card p{margin:0;font-size:clamp(14px,1.9vw,18px);line-height:1.45}
+.s.on .card{animation:up .7s both calc(.4s + var(--i)*.2s)}
+.map{grid-column:span 2;display:flex;align-items:center;justify-content:center;border-top-color:var(--g)}
+.map svg{width:100%;max-height:230px}
+.map path{fill:#0b3a7a55;stroke:var(--a);stroke-width:1.5;stroke-dasharray:900;stroke-dashoffset:900}
+.s.on .map path{animation:draw 2.4s forwards .4s}
+.dot{fill:var(--g);animation:ping 2s infinite}
+.tl{position:relative;display:flex;flex-wrap:wrap;gap:14px;padding-top:18px}
+.tl::before{content:"";position:absolute;top:0;left:0;height:3px;width:100%;background:linear-gradient(90deg,var(--a),var(--g));transform-origin:left;transform:scaleX(0)}
+.s.on .tl::before{animation:grow 1.8s forwards .3s}
+.ev{flex:1 1 150px;opacity:0;padding-top:6px}
+.ev b{display:block;font-size:clamp(22px,3vw,32px);color:var(--g)}
+.ev span{font-size:clamp(14px,1.8vw,17px);line-height:1.4}
+.s.on .ev{animation:right .7s both calc(.5s + var(--i)*.3s)}
+.hero{display:flex;flex-wrap:wrap;align-items:center;gap:24px;justify-content:center}
+.hero>div:first-child{flex:1 1 320px}
+.vis{flex:0 1 320px;max-width:100%}
+.tag{letter-spacing:.3em;color:var(--g);font-size:13px;font-weight:600;margin:0}
+.who{color:var(--mu);font-size:15px;margin-top:20px}
+.orb{transform-origin:150px 150px;animation:spin 14s linear infinite}
+.sun{transform-origin:150px 150px;animation:spin 60s linear infinite}
+#nav{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;align-items:center;gap:12px;padding:12px 6vw calc(12px + env(safe-area-inset-bottom,0px))}
+#nav button{background:#0a1c4acc;color:var(--tx);border:1px solid #ffffff33;border-radius:999px;width:44px;height:44px;font-size:18px;cursor:pointer}
+#pb{flex:1;height:3px;background:#ffffff1a;border-radius:2px;overflow:hidden}
+#pb i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--g));transition:width .6s}
+#ct{color:var(--mu);font-size:13px;min-width:44px;text-align:center}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes right{from{opacity:0;transform:translateX(-22px)}to{opacity:1;transform:none}}
+@keyframes grow{to{transform:scaleX(1)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ping{50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style></head><body>
+<canvas id="bg"></canvas><div id="app"></div>
+<div id="nav"><button id="pv" aria-label="Алдыңғы">‹</button><div id="pb"><i></i></div><span id="ct"></span><button id="nx" aria-label="Келесі">›</button></div>
+<script>
+const rays=Array.from({length:32},(_,i)=>`<polygon points="150,62 145,92 155,92" fill="#fec50c" transform="rotate(${i*11.25} 150 150)"/>`).join('');
+const vis=`<svg class="vis" viewBox="0 0 300 300"><circle cx="150" cy="150" r="140" fill="#00afca"/><g class="sun">${rays}</g><circle cx="150" cy="150" r="42" fill="#fec50c"/><g class="orb"><ellipse cx="150" cy="150" rx="140" ry="50" fill="none" stroke="#fff" stroke-opacity=".5" stroke-dasharray="4 6" transform="rotate(-25 150 150)"/><g transform="rotate(-25 150 150)"><rect x="276" y="143" width="14" height="14" rx="3" fill="#fff"/><rect x="268" y="148" width="30" height="4" fill="#9fb2d6"/></g></g></svg>`;
+const map=`<svg viewBox="0 0 300 160"><path d="M10,70 L40,50 L70,55 L95,35 L140,40 L175,25 L215,35 L255,30 L290,55 L280,85 L245,95 L225,120 L190,115 L160,135 L120,125 L85,115 L60,125 L35,105 L15,95 Z"/><circle class="dot" cx="125" cy="92" r="6"/><circle cx="125" cy="92" r="2.5" fill="#fff"/><text x="135" y="88" fill="#fff" font-size="11" font-family="Inter,sans-serif">Байқоңыр</text></svg>`;
+const S=[
+{k:'hero',tag:'ҚАЗАҚСТАН · ҒАРЫШ',t:'Қазақстанның ғарышты игерудегі жетістіктері',sub:'Байқоңырдан болашаққа',who:'Орындаған: [Студенттің аты-жөні] · [Топ]'},
+{t:'Байқоңыр ғарыш айлағы',m:1,c:[['Маңызы','Әлемдегі <em>алғашқы әрі ең ірі</em> ғарыш айлақтарының бірі'],['Орналасуы','Қазақстанның <em>Қызылорда облысында</em>'],['Тарихы','1955 жылы құрылды; <em>1961 жылы Гагарин</em> осы жерден ұшты'],['Қазіргі мәртебесі','Ресейге <em>2050 жылға дейін</em> жалға берілген']]},
+{t:'Қазақстан және ғарыш тарихы',tl:[['1955','<em>Байқоңыр</em> құрыла бастады'],['1957','Байқоңырдан <em>алғашқы жер серігі</em> ұшырылды'],['1961','<em>Юрий Гагарин</em> тарихтағы тұңғыш ғарыштық ұшуды жасады'],['1991','Тәуелсіздік; <em>Тоқтар Әубәкіров</em> ұшты'],['2006','Алғашқы ұлттық спутник <em>KazSat-1</em>'],['2015','<em>Айдын Айымбетов</em> ХҒС-қа ұшты']]},
+{t:'Тоқтар Әубәкіров',c:[['Тұңғыш ғарышкер','Қазақстанның <em>алғашқы ғарышкері</em>; 1946 ж. Қарағанды облысында туған'],['Ұшуы','1991 жылғы <em>2 қазан</em>, «Союз ТМ-13», «Мир» станциясына, 8 тәулік'],['Тарихи маңызы','Қазақ халқының <em>ғарыш тарихының басы</em>']]},
+{t:'Талғат Мұсабаев',c:[['Қызметі','Қазақстанда туған <em>ғарышкер</em>, экипаж командирі'],['Ұшу миссиялары','1994 («Союз ТМ-19»), 1998 («Союз ТМ-27»), 2001 («Союз ТМ-32») — <em>үш ұшу</em>'],['Үлесі','Ғарышта <em>340 тәуліктен астам</em> жұмыс істеді']]},
+{t:'Айдын Айымбетов',c:[['Ұшуы','<em>2015 жылғы қыркүйек</em>, «Союз ТМА-18М»'],['Миссиясы','Халықаралық ғарыш станциясында <em>шамамен 9 тәулік</em>'],['Ғылыми тәжірибелер','Қазақстандық <em>ғылыми бағдарлама</em> бойынша жұмыстар'],['Маңызы','Тәуелсіз Қазақстан атынан <em>ұшқан тұңғыш ғарышкер</em>']]},
+{t:'Қазақстанның ғарыштық технологиялары',c:[['Қашықтан зондтау','<em>KazEOSat-1</em> (2014): Жерді жоғары дәлдікпен түсіру'],['Спутниктер','<em>KazSat-1, 2, 3</em> байланыс спутниктері'],['Байланыс жүйелері','Теледидар, <em>интернет</em> және деректер беру'],['Ғарыштық деректер','Жерді <em>мониторингілеу</em> және картографиялау']]},
+{t:'Ғарыш саласының маңызы',c:[['Ғылым','Жаңа <em>зерттеулер</em> мен тәжірибелер'],['Білім','Инженерлер мен ғалымдар <em>даярлау</em>'],['Байланыс','Ел бойынша <em>сенімді байланыс</em>'],['Экология','Табиғат жағдайын <em>бақылау</em>'],['Ауыл шаруашылығы','Егін алқаптарын <em>спутниктен</em> бақылау'],['Технологиялық даму','Ұлттық <em>инновациялар</em> дамуы']]},
+{t:'Болашақ',c:[['Жаңа спутниктер','Жетілдірілген <em>спутниктік технологиялар</em>'],['Ғарыштық зерттеулер','Ғылыми бағдарламаларды <em>кеңейту</em>'],['STEM және жастар','Жастардың <em>ғылым мен инженерияға</em> қызығушылығы'],['Ынтымақтастық','<em>Халықаралық</em> серіктестік']]},
+{k:'hero',tag:'ТАРИХТАН БОЛАШАҚҚА',t:'Қазақстан және ғарыш: тарихтан болашаққа',sub:'Назарларыңызға рақмет!',who:''}
+];
+const app=document.getElementById('app');
+S.forEach(d=>{const e=document.createElement('section');e.className='s';let h='';
+if(d.k=='hero')h=`<div class="hero"><div><p class="tag">${d.tag}</p><h1>${d.t}</h1><p class="lead">${d.sub}</p><p class="who">${d.who}</p></div>${vis}</div>`;
+else{h=`<h2>${d.t}</h2>`;
+if(d.tl)h+=`<div class="tl">${d.tl.map((x,i)=>`<div class="ev" style="--i:${i}"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('')}</div>`;
+if(d.c)h+=`<div class="grid">${d.m?`<div class="card map">${map}</div>`:''}${d.c.map((x,i)=>`<div class="card" style="--i:${i+1}"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('')}</div>`}
+e.innerHTML=h;app.appendChild(e)});
+const E=[...app.children];let c=0;
+function go(n){c=Math.max(0,Math.min(E.length-1,n));E.forEach((e,i)=>e.classList.toggle('on',i==c));document.getElementById('ct').textContent=(c+1)+' / '+E.length;document.querySelector('#pb i').style.width=((c+1)/E.length*100)+'%'}
+pv.onclick=()=>go(c-1);nx.onclick=()=>go(c+1);
+addEventListener('keydown',k=>{if(['ArrowRight','ArrowDown',' ','PageDown'].includes(k.key))go(c+1);if(['ArrowLeft','ArrowUp','PageUp'].includes(k.key))go(c-1)});
+let tx=0;addEventListener('touchstart',e=>tx=e.touches[0].clientX);addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>60)go(c+(d<0?1:-1))});
+go(0);
+const cv=document.getElementById('bg'),x=cv.getContext('2d');let W,H,P=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;P=Array.from({length:120},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,s:Math.random()*.15+.03,p:Math.random()*6}))}
+rs();addEventListener('resize',rs);
+(function f(t){x.clearRect(0,0,W,H);P.forEach(p=>{p.x-=p.s;if(p.x<0)p.x=W;x.globalAlpha=.5+.5*Math.sin(t/1500+p.p);x.fillStyle='#fff';x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()});requestAnimationFrame(f)})(0);
+</script></body></html>
